@@ -1,0 +1,76 @@
+import java.util.Properties;
+
+import javax.jms.JMSException;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+import javax.jms.Topic;
+import javax.jms.TopicConnection;
+import javax.jms.TopicConnectionFactory;
+import javax.jms.TopicPublisher;
+import javax.jms.TopicSession;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+
+public class TopicProducer {
+	public static final String TOPIC = "topic/PJPubSubTopic";
+	
+	public static void main(String[] args) throws JMSException, NamingException {
+		System.out.println("----Entering JMS TopicProducer----");
+		
+		// Obtain a JNDI connection
+		Context initialContext = TopicProducer.getInitialContext();
+		System.out.println("Initial Context created..");
+
+		// Lookup a JMS Connection factory
+		TopicConnectionFactory topicConnectionFactory = (TopicConnectionFactory) initialContext
+						.lookup("jms/GFConnectionFactory");
+		System.out.println("Lookup of Connection Factory complete..");
+		
+		// Looking up a JMS topic
+		Topic topic = (Topic) initialContext.lookup(TopicProducer.TOPIC);
+		System.out.println("Lookup of Topic done...");
+				
+		// Create a JMS connection
+		TopicConnection topicConnection = topicConnectionFactory
+						.createTopicConnection();
+		System.out.println("Connection available...");
+		
+		// Creating Session object
+		TopicSession topicSession = topicConnection.createTopicSession(false,
+				Session.AUTO_ACKNOWLEDGE);
+		System.out.println("Session is ready...");
+		
+		//Starting the Connection
+		topicConnection.start();
+
+		//Creating Subscriber and sending a message
+		TopicProducer producer = new TopicProducer();
+		System.out.println("Publisher is ready to send...");
+		producer.sendMessage("---Message from Publisher---",topicSession,topic);
+		
+		System.out.println("----Exiting JMS TopicProducer----");
+
+	}
+	
+	// Specifying the JNDI properties specific to the vendor
+	public static Context getInitialContext() throws JMSException,
+			NamingException {
+		Properties props = new Properties();
+		props.setProperty("java.naming.factory.initial","com.sun.enterprise.naming.SerialInitContextFactory");
+		props.setProperty("java.naming.factory.url.pkgs","com.sun.enterprise.naming");
+		props.setProperty("java.naming.provider.url","http://localhost:4848");
+		Context context = new InitialContext(props);
+		return context;
+	}
+	
+	// Create and send message using topic publisher
+	protected void sendMessage(String text, TopicSession topicSess, Topic topic) throws JMSException {
+		TopicPublisher topicPublisher = topicSess.createPublisher(topic);
+		TextMessage message = topicSess.createTextMessage(text);
+		message.setText(username + " : " + text);
+		publisher.publish(message);
+	}
+
+}

@@ -1,0 +1,30 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Properties;
+
+import javax.jms.JMSException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+
+public class TopicConsumer {
+
+	public static void main(String[] args) {
+		System.out.println("----Entering JMS TopicConsumer----");
+		System.out.println("----Exiting JMS TopicConsumer");
+	}
+	
+	// Specifying the JNDI properties specific to the vendor
+	public static Context getInitialContext() throws JMSException,
+			NamingException {
+		Properties props = new Properties();
+		props.setProperty("java.naming.factory.initial",
+				"org.jnp.interfaces.NamingContextFactory");
+		props.setProperty("java.naming.factory.url.pkgs", "org.jboss.naming");
+		props.setProperty("java.naming.provider.url", "localhost:1099");
+		Context context = new InitialContext(props);
+		return context;
+	}
+
+}

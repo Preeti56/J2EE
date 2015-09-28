@@ -1,0 +1,9 @@
+
+public class P2P_MDBClient {
+	public static void main(String[] args) {
+		System.out.println("----Entering JMS P2P MDB Client---");
+	}
+
+
+
+}

@@ -1,0 +1,10 @@
+import javax.jms.MessageListener;
+
+public class TopicConsumer implements MessageListener {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

@@ -1,0 +1,59 @@
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.TextMessage;
+import javax.jms.MessageListener;
+
+public class P2PReceiver implements MessageListener{
+	public static final String Queue = "Queue/PJPubSubQueue";
+
+	public static void main(String[] args) throws JMSException,
+	NamingException, InterruptedException {
+		System.out.println("----Entering JMS QueueConsumerOne----");
+
+		// Obtain a JNDI connection
+		Context initialContext = QueueProducer.getInitialContext();
+		System.out.println("Initial Context created..");
+
+		// Lookup a JMS Connection factory
+		QueueConnectionFactory QueueConnectionFactory = (QueueConnectionFactory) initialContext
+				.lookup("jms/GFConnectionFactory");
+		System.out.println("Lookup of Connection Factory complete..");
+
+		// Looking up a JMS Queue
+		Queue Queue = (Queue) initialContext.lookup(QueueConsumerOne.Queue);
+		System.out.println("Lookup of Queue done...");
+
+		// Create a JMS connection
+		QueueConnection QueueConnection = QueueConnectionFactory
+				.createQueueConnection();
+		System.out.println("Connection available...");
+
+		// Creating Session object
+		QueueSession QueueSession = QueueConnection.createQueueSession(false,
+				Session.AUTO_ACKNOWLEDGE);
+		System.out.println("Session is ready...");
+
+		// Creating Subscriber and setting a JMS message listener
+		QueueSession.createSubscriber(Queue).setMessageListener(
+				new QueueConsumerOne());
+		System.out.println("Subscriber is ready to receive...");
+
+		// Starting the Connection
+		QueueConnection.start();
+
+		while (true) {
+			Thread.sleep(1);
+		}
+
+	}
+
+	@Override
+	public void onMessage(Message msg) {
+		try {
+			System.out.println("Incoming msgs for QueueConsumer1: "
+					+ ((TextMessage) msg).getText());
+		} catch (JMSException e) {
+			e.printStackTrace();
+		}
+	}
+}

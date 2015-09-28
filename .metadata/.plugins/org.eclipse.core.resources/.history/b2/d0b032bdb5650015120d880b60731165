@@ -1,0 +1,43 @@
+package com.jms;
+
+import java.util.Properties;
+
+import javax.jms.Message;
+import javax.jms.MessageListener;
+import javax.jms.ObjectMessage;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+public class Communicator2 implements MessageListener {
+	public static final String QUEUE01 = "queue/Channel01";
+	public static final String QUEUE02 = "queue/Channel02";
+	
+	@Override
+	public void onMessage(Message message) {
+		ObjectMessage objectMessage = (ObjectMessage) message;
+		try{
+			P2PApp02 app02 = (P2PApp02) objectMessage;
+			System.out.println("Sender: " + app02.getName());
+			System.out.println("Message: " + app02.getMessage());
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+	
+	// Specifying the JNDI properties specific to vendor
+	public static Context getInitialContext() throws NamingException{
+		Properties props = new Properties();
+		props.setProperty("java.naming.factory.initial","com.sun.enterprise.naming.SerialInitContextFactory");
+		props.setProperty("java.naming.factory.url.pkgs","com.sun.enterprise.naming");
+		props.setProperty("java.naming.provider.url","http://localhost:4848");
+		Context context = new InitialContext(props);
+		return context;
+	}
+}

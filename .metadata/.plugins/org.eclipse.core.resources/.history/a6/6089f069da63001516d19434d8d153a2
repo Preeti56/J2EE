@@ -1,0 +1,72 @@
+import java.util.Properties;
+
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageListener;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+import javax.jms.Topic;
+import javax.jms.TopicConnection;
+import javax.jms.TopicConnectionFactory;
+import javax.jms.TopicSession;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+
+public class TopicConsumer implements MessageListener {
+	public static final String TOPIC = "topic/PJPubSubTopic";
+	
+	public static void main(String[] args) throws JMSException, NamingException {
+		System.out.println("----Entering JMS TopicConsumer----");
+		
+		// Obtain a JNDI connection
+		Context initialContext = TopicConsumer.getInitialContext();
+
+		// Lookup a JMS Connection factory
+		TopicConnectionFactory topicConnectionFactory = (TopicConnectionFactory) initialContext
+						.lookup("ConnectionFactory");
+		
+		// Looking up a JMS topic
+		Topic topic = (Topic) initialContext.lookup(TopicConsumer.TOPIC);
+				
+		// Create a JMS connection
+		TopicConnection topicConnection = topicConnectionFactory
+						.createTopicConnection();
+		
+		// Creating Session object
+		TopicSession topicSession = topicConnection.createTopicSession(false,
+				Session.AUTO_ACKNOWLEDGE);
+
+		//Creating Subscriber and setting a JMS message listener
+		topicSession.createSubscriber(topic).setMessageListener(new TopicConsumer());
+		
+		//Starting the Subscriber
+		topucConnection.start();
+
+		System.out.println("----Exiting JMS TopicConsumer");
+	}
+	
+	// Specifying the JNDI properties specific to the vendor
+	public static Context getInitialContext() throws JMSException,
+			NamingException {
+		Properties props = new Properties();
+		props.setProperty("java.naming.factory.initial",
+				"org.jnp.interfaces.NamingContextFactory");
+		props.setProperty("java.naming.factory.url.pkgs", "org.jboss.naming");
+		props.setProperty("java.naming.provider.url", "localhost:1099");
+		Context context = new InitialContext(props);
+		return context;
+	}
+
+	@Override
+	public void onMessage(Message msg) {
+		try {
+			System.out.println(((TextMessage) msg).getText());
+		} catch (JMSException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+}

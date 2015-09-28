@@ -1,0 +1,9 @@
+
+public class P2PReceiver implements MessageListener{
+
+	public static void main(String[] args)  {
+		// TODO Auto-generated method stub
+
+	}
+
+}

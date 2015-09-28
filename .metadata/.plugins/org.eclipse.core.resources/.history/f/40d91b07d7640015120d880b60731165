@@ -1,0 +1,66 @@
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.Queue;
+import javax.jms.QueueConnection;
+import javax.jms.QueueConnectionFactory;
+import javax.jms.QueueSession;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+import javax.jms.MessageListener;
+import javax.naming.Context;
+import javax.naming.NamingException;
+
+public class P2PReceiver implements MessageListener{
+	public static final String QUEUE = "queue/PJP2PQueue";
+
+	public static void main(String[] args) throws JMSException,
+	NamingException, InterruptedException {
+		System.out.println("----Entering JMS P2PReceiver----");
+
+		// Obtain a JNDI connection
+		Context initialContext = P2PSender.getInitialContext();
+		System.out.println("Initial Context created..");
+
+		// Lookup a JMS Connection factory
+		QueueConnectionFactory QueueConnectionFactory = (QueueConnectionFactory) initialContext
+				.lookup("jms/GFQueueConnectionFactory");
+		System.out.println("Lookup of Connection Factory complete..");
+
+		// Looking up a JMS Queue
+		Queue Queue = (Queue) initialContext.lookup(P2PReceiver.QUEUE);
+		System.out.println("Lookup of Queue done...");
+
+		// Create a JMS connection
+		QueueConnection QueueConnection = QueueConnectionFactory
+				.createQueueConnection();
+		System.out.println("Connection available...");
+
+		// Creating Session object
+		QueueSession QueueSession = QueueConnection.createQueueSession(false,
+				Session.AUTO_ACKNOWLEDGE);
+		System.out.println("Session is ready...");
+
+		// Creating Subscriber and setting a JMS message listener
+		QueueSession.createSubscriber(Queue).setMessageListener(
+				new QueueConsumerOne());
+		System.out.println("Subscriber is ready to receive...");
+
+		// Starting the Connection
+		QueueConnection.start();
+
+		while (true) {
+			Thread.sleep(1);
+		}
+
+	}
+
+	@Override
+	public void onMessage(Message msg) {
+		try {
+			System.out.println("Incoming msgs for P2PReceiver: "
+					+ ((TextMessage) msg).getText());
+		} catch (JMSException e) {
+			e.printStackTrace();
+		}
+	}
+}

@@ -1,0 +1,23 @@
+package com.jms;
+import java.io.Serializable;
+
+
+public class P2PChannel01 implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getMessage() {
+		return message;
+	}
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	private String name;
+	private String message;
+
+}

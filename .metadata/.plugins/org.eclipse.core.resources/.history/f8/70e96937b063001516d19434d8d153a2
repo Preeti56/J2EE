@@ -1,0 +1,85 @@
+import java.util.Properties;
+
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+import javax.jms.MessageListener;
+import javax.jms.Topic;
+import javax.jms.TopicConnection;
+import javax.jms.TopicConnectionFactory;
+import javax.jms.TopicSession;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+
+public class Chat implements MessageListener {
+	public static final String TOPIC="topic/PJPubSubChatTopic";
+	
+	public static void main(String[] args) throws NamingException, JMSException {
+		if(args.length!=1){
+			System.out.println("A username is requires");
+		}else{
+			
+			String username = args[0];
+			Chat chat = new Chat();
+			
+			Topic topic = (Topic)initialContext.lookup(Chat.TOPIC);
+			
+			
+			
+			chat.subscribe();
+			chat.publish();
+		}
+
+	}
+	
+	@Override
+	public void onMessage(Message msg) {
+		try {
+			System.out.println(((TextMessage)msg).getText());
+		} catch (JMSException e) {
+			e.printStackTrace();
+		}		
+	}
+	
+	public void publish(){
+		
+	}
+	
+	public void subscribe(){
+		
+	}
+	
+	
+	public static Context getInitialContext() throws JMSException, NamingException{
+		// Specifying the JNDI properties specific to the vendor
+		Properties props = new Properties();
+		props.setProperty("java.naming.factory.initial","org.jnp.interfaces.NamingContextFactory");
+		props.setProperty("java.naming.factory.url.pkgs","org.jboss.naming");
+		props.setProperty("java.naming.provider.url","localhost:1099");
+		Context context = new InitialContext(props);
+		return context;
+	}
+	
+	public Chat(String topicName, String uname, String pwd) throws JMSException, NamingException{
+		//Obtain a JNDI connection
+		Context initialContext = Chat.getInitialContext();
+		
+		//Lookup a JMS Connection factory
+		TopicConnectionFactory topicConnectionFactory = (TopicConnectionFactory)initialContext.lookup("ConnectionFactory");
+		
+		//Create a JMS connection
+		TopicConnection topicConnection = topicConnectionFactory.createTopicConnection();
+		
+		//Creating publisher and subscriber Session object
+		TopicSession pubSession = topicConnection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
+		TopicSession subSession = topicConnection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
+		
+		
+	}
+
+
+
+}

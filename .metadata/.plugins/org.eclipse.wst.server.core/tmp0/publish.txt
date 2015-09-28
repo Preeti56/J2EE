@@ -1,0 +1,7 @@
+#GlassFish 3
+#Sun Sep 27 22:59:29 PDT 2015
+org.eclipse.jst.jee.server\:JMSPubSub_MDB_Client=C\:\\glassfish4\\glassfish\\domains\\domain1\\eclipseApps\\JMSPubSub_MDB_Client
+org.eclipse.jst.jee.server\:JMSPubSub_MDB=C\:\\glassfish4\\glassfish\\domains\\domain1\\eclipseApps\\JMSPubSub_MDB
+org.eclipse.jst.jee.server\:JMS_P2P_MDB=C\:\\glassfish4\\glassfish\\domains\\domain1\\eclipseApps\\JMS_P2P_MDB
+org.eclipse.jst.jee.server\:JMSP2P_MDB_WebClient=C\:\\glassfish4\\glassfish\\domains\\domain1\\eclipseApps\\JMSP2P_MDB_WebClient
+org.eclipse.jst.jee.server\:JMSP2P_MDB=C\:\\glassfish4\\glassfish\\domains\\domain1\\eclipseApps\\JMSP2P_MDB

@@ -1,0 +1,28 @@
+import java.util.Properties;
+
+import javax.jms.JMSException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+
+public class TopicProducer {
+	public static final String TOPIC = "topic/PJPubSubTopic";
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+	
+	// Specifying the JNDI properties specific to the vendor
+	public static Context getInitialContext() throws JMSException,
+			NamingException {
+		Properties props = new Properties();
+		props.setProperty("java.naming.factory.initial","com.sun.enterprise.naming.SerialInitContextFactory");
+		props.setProperty("java.naming.factory.url.pkgs","com.sun.enterprise.naming");
+		props.setProperty("java.naming.provider.url","http://localhost:4848");
+		Context context = new InitialContext(props);
+		return context;
+	}
+
+}

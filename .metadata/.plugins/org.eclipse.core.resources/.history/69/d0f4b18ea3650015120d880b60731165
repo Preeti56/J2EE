@@ -1,0 +1,50 @@
+import java.io.IOException;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/PubSub_MDB_Client")
+public class PubSub_MDB_Client extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("--Entering doGet() method--");
+		// Obtain a JNDI connection
+			Context initialContext = new InitialContext();
+			System.out.println("Initial Context created..");
+
+			// Lookup a JMS Connection factory
+			TopicConnectionFactory queueConnectionFactory = (TopicConnectionFactory) initialContext
+					.lookup("jms/GFTopicConnectionFactory");
+			System.out.println("Lookup of Connection Factory complete..");
+
+			// Looking up a JMS Topic
+			Topic queue = (Topic) initialContext.lookup("queue/PJMDBTopic");
+			System.out.println("Lookup of Topic done...");
+
+			// Create a JMS connection
+			TopicConnection queueConnection = queueConnectionFactory
+					.createTopicConnection();
+			System.out.println("Connection available...");
+
+			// Creating Session object
+			TopicSession queueSession = queueConnection.createTopicSession(false,
+					Session.AUTO_ACKNOWLEDGE);
+			System.out.println("Session is ready...");
+			
+			//Creating Sender
+			TopicSender sender = queueSession.createSender(queue);
+			System.out.println("Sender is ready to send...");
+			
+			//Sending Message
+			TextMessage msg = queueSession.createTextMessage("Hello from MDB Web Client");
+			sender.send(msg);
+			System.out.println("Message sent..");
+	}
+
+}

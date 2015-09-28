@@ -1,0 +1,29 @@
+package com.jms;
+
+import javax.jms.Message;
+import javax.jms.MessageListener;
+import javax.jms.ObjectMessage;
+
+public class Communicator2 implements MessageListener {
+	public static final String QUEUE01 = "queue/Channel01";
+	public static final String QUEUE02 = "queue/Channel02";
+	
+	@Override
+	public void onMessage(Message message) {
+		ObjectMessage objectMessage = (ObjectMessage) message;
+		try{
+			P2PApp01 app01 = (P2PApp01) objectMessage;
+			System.out.println("Sender: " + app01.getName());
+			System.out.println("Message: " + app01.getMessage());
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

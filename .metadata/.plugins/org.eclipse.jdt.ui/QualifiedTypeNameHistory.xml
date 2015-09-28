@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="java.lang.System"/>
+<fullyQualifiedTypeName name="javax.jms.JMSException"/>
+<fullyQualifiedTypeName name="java.util.Properties"/>
+<fullyQualifiedTypeName name="javax.naming.NamingException"/>
+<fullyQualifiedTypeName name="javax.naming.InitialContext"/>
+<fullyQualifiedTypeName name="javax.naming.Context"/>
+<fullyQualifiedTypeName name="ChatProdCons"/>
+<fullyQualifiedTypeName name="javax.jms.TopicConnectionFactory"/>
+<fullyQualifiedTypeName name="javax.jms.Topic"/>
+<fullyQualifiedTypeName name="javax.jms.TopicConnection"/>
+<fullyQualifiedTypeName name="javax.jms.Session"/>
+<fullyQualifiedTypeName name="javax.jms.TopicSession"/>
+<fullyQualifiedTypeName name="javax.jms.TopicSubscriber"/>
+<fullyQualifiedTypeName name="java.io.BufferedReader"/>
+<fullyQualifiedTypeName name="java.io.InputStreamReader"/>
+<fullyQualifiedTypeName name="javax.jms.MessageListener"/>
+<fullyQualifiedTypeName name="javax.jms.TopicPublisher"/>
+</qualifiedTypeNameHistroy>

@@ -1,0 +1,28 @@
+import java.util.Properties;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+
+public class P2P_MDBClient {
+	public static void main(String[] args) throws NamingException {
+		System.out.println("----Entering JMS P2P MDB Client---");
+		
+		// Obtain a JNDI connection
+		Context initialContext = P2P_MDBClient.getInitialContext();
+		System.out.println("Initial Context created..");
+
+	}
+
+	// Specifying the JNDI properties specific to vendor
+	public static Context getInitialContext() throws NamingException{
+		Properties props = new Properties();
+		props.setProperty("java.naming.factory.initial","com.sun.enterprise.naming.SerialInitContextFactory");
+		props.setProperty("java.naming.factory.url.pkgs","com.sun.enterprise.naming");
+		props.setProperty("java.naming.provider.url","http://localhost:4848");
+		Context context = new InitialContext(props);
+		return context;
+	}
+
+}

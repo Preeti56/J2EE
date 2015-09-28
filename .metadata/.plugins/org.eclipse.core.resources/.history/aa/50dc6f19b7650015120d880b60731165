@@ -1,0 +1,100 @@
+package com.jms;
+
+import P2PSender;
+
+import java.util.Properties;
+
+import javax.jms.Message;
+import javax.jms.MessageListener;
+import javax.jms.ObjectMessage;
+import javax.jms.Queue;
+import javax.jms.QueueConnection;
+import javax.jms.QueueConnectionFactory;
+import javax.jms.QueueReceiver;
+import javax.jms.QueueSession;
+import javax.jms.Session;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+public class Communicator01 implements MessageListener {
+	public static final String QUEUE01 = "queue/Channel02";
+	public static final String QUEUE02 = "queue/Channel01";
+	
+	public static void main(String[] args){
+System.out.println("----Entering Communicator01----");
+		
+		// Obtain a JNDI connection
+		Context initialContext = Communicator01.getInitialContext();
+		System.out.println("Initial Context created..");
+
+		// Lookup a JMS Connection factory
+		QueueConnectionFactory queueConnectionFactory = (QueueConnectionFactory) initialContext
+						.lookup("jms/GFQueueConnectionFactory");
+		System.out.println("Lookup of Connection Factory complete..");
+		
+		// Looking up a JMS Queue
+		Queue queue01 = (Queue) initialContext.lookup(Communicator01.QUEUE01);
+		Queue queue02 = (Queue) initialContext.lookup(Communicator01.QUEUE02);
+		System.out.println("Lookup of Queue done...");
+				
+		// Create a JMS connection
+		QueueConnection queueConnection = queueConnectionFactory
+						.createQueueConnection();
+		System.out.println("Connection available...");
+			
+		Communicator01 comm01 = new Communicator01();
+		comm01.receiveMessage(queueConnection, queue01);
+		comm01.sendMessage(queueConnection, queue02);
+		
+		
+		// Creating Session object
+		QueueSession queueSession = queueConnection.createQueueSession(false,
+				Session.AUTO_ACKNOWLEDGE);
+		System.out.println("Session is ready...");
+		//Starting the Connection
+		queueConnection.start();
+		//Creating Subscriber and sending a message
+		P2PSender sender = new P2PSender();
+		System.out.println("Sender is ready to send...");
+		sender.sendMessage("---Hello from P2PSender---",queueSession,queue);
+				
+		System.out.println("----Exiting JMS P2PSender----");
+	}
+	
+	public void sendMessage(QueueConnection qConn, Queue q){
+		
+	}
+	
+	public void receiveMeessage(QueueConnection qConn, Queue q){
+		// Creating Session object
+				QueueSession queueSession = qConn.createQueueSession(false,
+						Session.AUTO_ACKNOWLEDGE);
+				System.out.println("Session is ready...");
+				QueueReceiver receiver = queueSession.createReceiver(q);
+				
+	}
+	
+	@Override
+	public void onMessage(Message message) {
+		ObjectMessage objectMessage = (ObjectMessage) message;
+		try{
+			P2PApp01 app01 = (P2PApp01) objectMessage;
+			System.out.println("Sender: " + app01.getName());
+			System.out.println("Message: " + app01.getMessage());
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	// Specifying the JNDI properties specific to vendor
+	public static Context getInitialContext() throws NamingException{
+		Properties props = new Properties();
+		props.setProperty("java.naming.factory.initial","com.sun.enterprise.naming.SerialInitContextFactory");
+		props.setProperty("java.naming.factory.url.pkgs","com.sun.enterprise.naming");
+		props.setProperty("java.naming.provider.url","http://localhost:4848");
+		Context context = new InitialContext(props);
+		return context;
+	}
+
+}

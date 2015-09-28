@@ -1,0 +1,6 @@
+import java.io.Serializable;
+
+
+public class P2PChannel implements Serializable {
+
+}

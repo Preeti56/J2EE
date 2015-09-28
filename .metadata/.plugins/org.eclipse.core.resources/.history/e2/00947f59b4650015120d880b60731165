@@ -1,0 +1,19 @@
+package com.jms;
+
+import javax.jms.Message;
+import javax.jms.MessageListener;
+
+public class Communicator implements MessageListener {
+	public static final String QUEUE01 = "queue/Channel01";
+	public static final String QUEUE02 = "queue/Channel02";
+	
+	public static void main(String[] args){
+		
+	}
+	
+	@Override
+	public void onMessage(Message arg0) {
+
+	}
+
+}
